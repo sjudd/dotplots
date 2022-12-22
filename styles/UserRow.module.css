@@ -1,0 +1,13 @@
+.row {
+  width: 80vw;
+  text-align: center;
+  display: flex;
+  border-top: 2px solid black;
+  border-left: 2px solid black;
+  border-bottom: 2px solid black;
+}
+
+.cell {
+  flex: 1;
+  border-right: 2px solid black;
+}
