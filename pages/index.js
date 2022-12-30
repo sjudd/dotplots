@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css';
 import Profile from '../components/profile.js';
-import UserRow from '../components/user_row.js';
 import DotPlot from '../components/DotPlot.js';
 
 export default function Home() {
@@ -14,9 +13,6 @@ export default function Home() {
 
       <main>
         <DotPlot />
-        <UserRow 
-          count={10} 
-          indexToChecked={{2: undefined}} />
         <h1 className={styles.title}>
           Learn <a href="https://nextjs.org">Next.js!</a>
         </h1>

@@ -1,4 +1,5 @@
 .allrows {
-  height: 80vh;
+  display: flex;
+  border-bottom: 2px solid black;
 }
 

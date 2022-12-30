@@ -1,7 +1,6 @@
 import { DATA_LIST } from '../components/fake.js';
 import { parseEventList } from '../components/parse.js';
-import UserRow from '../components/user_row.js';
-import styles from '../styles/DotPlot.module.css';
+import UserRows from '../components/UserRows.js';
 
 export default function DotPlot() {
   var eventList = parseEventList(
@@ -10,19 +9,24 @@ export default function DotPlot() {
     Date.parse("2022-12-18T00:00:00Z"));
   console.log(eventList);
 
-
   const selectedEvent = "OpenApp";
-  const count = eventList["count"];
 
   return ( 
-    <div className={styles.allrows}>
-    { 
-      Object.keys(eventList["users"]).map((userId, index) => 
-      (
-        <UserRow count={count} indexToChecked={eventList["users"][userId]["event_maps"][selectedEvent]} />
-      ))
-    }
-    </div>
+    <UserRowsFromEventList eventList={eventList} selectedEvent={selectedEvent}/>
+  )
+}
+
+function UserRowsFromEventList({eventList, selectedEvent}) {
+  const count = eventList["count"];
+  const users = Object.keys(eventList["users"])
+  return ( 
+      <UserRows 
+        totalRows={users.length}
+        totalColumns={count}
+        isChecked={(rowIndex, columnIndex) => 
+          eventList["users"][users[rowIndex]]["event_maps"][selectedEvent][columnIndex]
+        }
+      />
   )
 }
 
