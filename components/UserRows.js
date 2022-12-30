@@ -3,7 +3,7 @@ import styles from '../styles/UserRows.module.css';
 function UserRow({ columnCount, isColumnChecked }) {
   const columns = [];
   for (let i = 0; i < columnCount; i++) {
-    const value = isColumnChecked(i) ? "x" : "";
+    const value = isColumnChecked(i) ? "x" : "\u200b";
     columns.push(<div key={i} className={styles.cell}>{value}</div>);
   }
 

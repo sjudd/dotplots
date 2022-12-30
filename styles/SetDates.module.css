@@ -1,0 +1,17 @@
+.set_dates {
+  display: flex;
+}
+
+.set_dates > * {
+  margin-right: 0.5em;
+}
+
+.picker_and_label {
+  display: flex;
+}
+
+.label {
+  flex-shrink: 0;
+  padding-right: 0.5em;
+}
+

@@ -14,14 +14,11 @@ export function parseEventList(list, startDate, endDate) {
   list.forEach(item => {
     const userId = item[USER_ID];
     if (!(userId in users)) {
-      users[userId] = {};
+      users[userId] = {[EVENT_MAPS]: {}};
     }
     const eventTime = Date.parse(item["event_time"]);
     console.log("eventTime" + eventTime);
     if (eventTime > startDate && eventTime < endDate) {
-      if (!(EVENT_MAPS in users[userId])) {
-        users[userId][EVENT_MAPS] = {};
-      }
       const eventId = item["event_id"];
       if (!(eventId in users[userId][EVENT_MAPS])) {
         users[userId][EVENT_MAPS][eventId] = {};
