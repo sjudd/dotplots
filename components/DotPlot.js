@@ -3,10 +3,20 @@ import { parseEventList } from '../components/parse.js';
 import UserRows from '../components/UserRows.js';
 import React, { useState } from "react";
 import SetDates from '../components/SetDates.js';
+import { useRouter } from 'next/router'
 
 export default function DotPlot() {
-  const [startDate, setStartDate] = useState(Date.parse("2022-12-06T00:00:00Z"));
-  const [endDate, setEndDate] = useState(Date.parse("2022-12-18T00:00:00Z"));
+  const router = useRouter();
+  // Query parameters are populated iafter ReactDom.hydrate, so wait
+  // for it to be ready before we try to read our params.
+  if (!router.isReady) {
+    return
+  }
+
+  const [ startDate, setStartDate ] = 
+    useDateQueryParameter(router, 'start', "2022-12-01T00:00:00Z")
+  const [ endDate, setEndDate ] = 
+    useDateQueryParameter(router, 'end', "2022-12-30T00:00:00Z")
 
   var eventList = parseEventList(DATA_LIST, startDate, endDate);
   console.log(eventList);
@@ -24,6 +34,29 @@ export default function DotPlot() {
     </div>
   )
 }
+
+
+function useDateQueryParameter(router, key, defaultInitialValue) {
+  var value = Date.parse(router.query[key]);
+  if (!value) {
+    value = Date.parse(defaultInitialValue);
+    console.log(`Missing value! ${router.query[key]} setting`);
+  }
+  const setValue = 
+    setQueryParameterFunction(router, key, (date) => date.toISOString());
+  return [value, setValue];
+}
+
+
+function setQueryParameterFunction(router, key, toUrlParameter) {
+  return (newDate) => {
+    router.push({ 
+      query: { ...router.query, [key]: toUrlParameter(newDate) } }, 
+      undefined, 
+      { shallow: true});
+  }
+}
+
 
 function UserRowsFromEventList({eventList, selectedEvent}) {
   const count = eventList["count"];

@@ -7,7 +7,6 @@ export const USER_ID = "user_id";
 export const EVENT_MAPS = "event_maps";
 
 export function parseEventList(list, startDate, endDate) {
-  console.log("test " + Date.parse("2022-12-01T00:00:00Z"));
   console.log("start " + startDate);
   console.log("end " + endDate);
   const users = {};
