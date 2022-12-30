@@ -42,6 +42,7 @@ function UserRowsFromEventList({eventList, selectedEvent}) {
             }
           }
         }
+        userIndexToKey={(index) => users[index]}
       />
   )
 }

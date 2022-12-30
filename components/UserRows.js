@@ -10,11 +10,12 @@ function UserRow({ columnCount, isColumnChecked }) {
   return <div className={styles.row}>{columns}</div>
 }
 
-export default function UserRows({ totalRows, totalColumns, isChecked }) {
+export default function UserRows({ totalRows, totalColumns, isChecked, userIndexToKey}) {
   const rows = []
   for (let i = 0; i < totalRows; i++) {
     rows.push(
       <UserRow 
+        key={userIndexToKey(i)}
         columnCount={totalColumns} 
         isColumnChecked={(columnIndex) => isChecked(i, columnIndex)}
       />
