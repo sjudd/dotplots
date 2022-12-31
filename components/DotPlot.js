@@ -1,9 +1,10 @@
 import { DATA_LIST } from '../components/fake.js';
-import { parseEventList } from '../components/parse.js';
+import { parseEventList, ALL_EVENTS } from '../components/parse.js';
 import UserRows from '../components/UserRows.js';
-import React, { useEffect, useState } from "react";
 import SetDates from '../components/SetDates.js';
+import EventPicker from '../components/EventPicker.js';
 import { useRouter } from 'next/router'
+import React, { useEffect, useState } from "react";
 
 export default function DotPlot() {
   const router = useRouter();
@@ -11,6 +12,7 @@ export default function DotPlot() {
   // for it to be ready before we try to read our params.
   const [ isLoading, setLoading ] = useState(true);
   useEffect(() => setLoading(!router.isReady), [router.isReady]);
+  const [selectedEvent, setSelectedEvent] = useState();
 
   if (isLoading) {
     // TODO: Figure out some more reasonable loading UI.
@@ -26,10 +28,13 @@ export default function DotPlot() {
   var eventList = parseEventList(DATA_LIST, startDate, endDate);
   console.log(eventList);
 
-  const selectedEvent = "OpenApp";
 
   return ( 
     <div>
+      <EventPicker 
+        eventNames={eventList[ALL_EVENTS]} 
+        selectedEvent={selectedEvent}
+        setSelectedEvent={setSelectedEvent} />
       <SetDates 
         startDate={startDate} 
         setStartDate={setStartDate} 
@@ -39,7 +44,6 @@ export default function DotPlot() {
     </div>
   )
 }
-
 
 function useDateQueryParameter(router, key, defaultInitialValue) {
   var value = Date.parse(router.query[key]);

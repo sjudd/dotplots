@@ -5,10 +5,12 @@ export const USERS = "users";
 export const USER_ID = "user_id";
 // Dictionary of EVENT_ID -> dictionary of EVENT_ID to DAY_INDEX
 export const EVENT_MAPS = "event_maps";
+export const ALL_EVENTS = "all_events";
 
 export function parseEventList(list, startDate, endDate) {
   console.log("start " + startDate);
   console.log("end " + endDate);
+  const allEvents = new Set();
   const users = {};
   list.forEach(item => {
     const userId = item[USER_ID];
@@ -19,6 +21,7 @@ export function parseEventList(list, startDate, endDate) {
     console.log("eventTime" + eventTime);
     if (eventTime > startDate && eventTime < endDate) {
       const eventId = item["event_id"];
+      allEvents.add(eventId);
       if (!(eventId in users[userId][EVENT_MAPS])) {
         users[userId][EVENT_MAPS][eventId] = {};
       }
@@ -30,7 +33,11 @@ export function parseEventList(list, startDate, endDate) {
       users[userId][EVENT_MAPS][eventId][dayIndex]++;
     }
   })
-  return {"count": daysBetween(startDate, endDate), [USERS]: users}
+  return {
+    "count": daysBetween(startDate, endDate), 
+    [USERS]: users,
+    [ALL_EVENTS]: allEvents,
+  }
 }
 
 function asUtc(dateTime) {
