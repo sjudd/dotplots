@@ -1,7 +1,7 @@
 import { DATA_LIST } from '../components/fake.js';
 import { parseEventList } from '../components/parse.js';
 import UserRows from '../components/UserRows.js';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SetDates from '../components/SetDates.js';
 import { useRouter } from 'next/router'
 
@@ -9,9 +9,14 @@ export default function DotPlot() {
   const router = useRouter();
   // Query parameters are populated iafter ReactDom.hydrate, so wait
   // for it to be ready before we try to read our params.
-  if (!router.isReady) {
-    return
+  const [ isLoading, setLoading ] = useState(true);
+  useEffect(() => setLoading(!router.isReady), [router.isReady]);
+
+  if (isLoading) {
+    // TODO: Figure out some more reasonable loading UI.
+    return;
   }
+
 
   const [ startDate, setStartDate ] = 
     useDateQueryParameter(router, 'start', "2022-12-01T00:00:00Z")
