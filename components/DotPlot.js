@@ -12,7 +12,6 @@ export default function DotPlot() {
   // for it to be ready before we try to read our params.
   const [ isLoading, setLoading ] = useState(true);
   useEffect(() => setLoading(!router.isReady), [router.isReady]);
-  const [selectedEvent, setSelectedEvent] = useState();
 
   if (isLoading) {
     // TODO: Figure out some more reasonable loading UI.
@@ -20,10 +19,12 @@ export default function DotPlot() {
   }
 
 
+  const [selectedEvent, setSelectedEvent] = 
+    useQueryParameter(router, 'event');
   const [ startDate, setStartDate ] = 
-    useDateQueryParameter(router, 'start', "2022-12-01T00:00:00Z")
+    useDateQueryParameter(router, 'start', "2022-12-01T00:00:00Z");
   const [ endDate, setEndDate ] = 
-    useDateQueryParameter(router, 'end', "2022-12-30T00:00:00Z")
+    useDateQueryParameter(router, 'end', "2022-12-30T00:00:00Z");
 
   var eventList = parseEventList(DATA_LIST, startDate, endDate);
   console.log(eventList);
@@ -54,6 +55,13 @@ function useDateQueryParameter(router, key, defaultInitialValue) {
   const setValue = 
     setQueryParameterFunction(router, key, (date) => date.toISOString());
   return [value, setValue];
+}
+
+function useQueryParameter(router, key) {
+  const value = router.query[key];
+  const setValue = 
+    setQueryParameterFunction(router, key, (value) => value);
+  return [value, setValue]
 }
 
 
