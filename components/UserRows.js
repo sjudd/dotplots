@@ -1,23 +1,25 @@
 import styles from '../styles/UserRows.module.css';
 
-function UserRow({ columnCount, isColumnChecked }) {
+function UserRow({ columnCount, isColumnChecked, isColumnColored }) {
   const columns = [];
   for (let i = 0; i < columnCount; i++) {
-    const value = isColumnChecked(i) ? "x" : "\u200b";
-    columns.push(<div key={i} className={styles.cell}>{value}</div>);
+    const checkValue = isColumnChecked(i) ? "x" : "\u200b";
+    const isColored = isColumnColored(i);
+    columns.push(<div key={i} className={isColored ? styles.cellColored : styles.cell}>{checkValue}</div>);
   }
 
   return <div className={styles.row}>{columns}</div>
 }
 
-export default function UserRows({ totalRows, totalColumns, isChecked, userIndexToKey}) {
+export default function UserRows({ totalRows, totalColumns, isColumnChecked, isColumnColored, userIndexToKey}) {
   const rows = []
   for (let i = 0; i < totalRows; i++) {
     rows.push(
       <UserRow 
         key={userIndexToKey(i)}
         columnCount={totalColumns} 
-        isColumnChecked={(columnIndex) => isChecked(i, columnIndex)}
+        isColumnChecked={(columnIndex) => isColumnChecked(i, columnIndex)}
+        isColumnColored={(columnIndex) => isColumnColored(i, columnIndex)}
       />
     )
   }

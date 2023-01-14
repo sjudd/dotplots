@@ -6,10 +6,14 @@
   border-left: 2px solid black;
 }
 
-.cell {
+.cell, .cellColored {
   display:block;
   flex: 1;
   border-right: 2px solid black;
+}
+
+.cellColored {
+  background-color: green;
 }
 
 .allrows {

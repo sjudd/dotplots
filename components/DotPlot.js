@@ -1,5 +1,5 @@
 import { DATA_LIST } from '../components/fake.js';
-import { parseEventList, ALL_EVENTS } from '../components/parse.js';
+import { parseEventList, ALL_EVENTS, ALL_STATES, STATE_MAPS } from '../components/parse.js';
 import UserRows from '../components/UserRows.js';
 import SetDates from '../components/SetDates.js';
 import EventPicker from '../components/EventPicker.js';
@@ -21,6 +21,8 @@ export default function DotPlot() {
 
   const [selectedEvent, setSelectedEvent] = 
     useQueryParameter(router, 'event');
+  const [selectedState, setSelectedState] = 
+    useQueryParameter(router, 'state');
   const [ startDate, setStartDate ] = 
     useDateQueryParameter(router, 'start', "2022-12-01T00:00:00Z");
   const [ endDate, setEndDate ] = 
@@ -29,19 +31,22 @@ export default function DotPlot() {
   var eventList = parseEventList(DATA_LIST, startDate, endDate);
   console.log(eventList);
 
-
   return ( 
     <div>
       <EventPicker 
         eventNames={eventList[ALL_EVENTS]} 
         selectedEvent={selectedEvent}
         setSelectedEvent={setSelectedEvent} />
+      <EventPicker 
+        eventNames={eventList[ALL_STATES]} 
+        selectedEvent={selectedState}
+        setSelectedEvent={setSelectedState} />
       <SetDates 
         startDate={startDate} 
         setStartDate={setStartDate} 
         endDate={endDate}
         setEndDate={setEndDate} />
-      <UserRowsFromEventList eventList={eventList} selectedEvent={selectedEvent} />
+      <UserRowsFromEventList eventList={eventList} selectedEvent={selectedEvent} selectedState = {selectedState} />
     </div>
   )
 }
@@ -74,24 +79,31 @@ function setQueryParameterFunction(router, key, toUrlParameter) {
   }
 }
 
+function isCheckedInUser(rowIndex, columnIndex, eventList, users, selected, mapKey) {
+  const userStateMap = eventList["users"][users[rowIndex]][mapKey]
+  if (selected in userStateMap) {
+    return userStateMap[selected][columnIndex] > 0;
+  } else {
+    return false;
+  }
+}
 
-function UserRowsFromEventList({eventList, selectedEvent}) {
+
+function UserRowsFromEventList({eventList, selectedEvent, selectedState}) {
   const count = eventList["count"];
-  const users = Object.keys(eventList["users"])
+  const users = Object.keys(eventList["users"]);
+  const isColumnColored = (rowIndex, columnIndex) => {
+    return isCheckedInUser(rowIndex, columnIndex, eventList, users, selectedState, STATE_MAPS);
+  };
+  const isColumnChecked = (rowIndex, columnIndex) => {
+    return isCheckedInUser(rowIndex, columnIndex, eventList, users, selectedEvent, "event_maps");
+  }
   return ( 
       <UserRows 
         totalRows={users.length}
         totalColumns={count}
-        isChecked={
-          (rowIndex, columnIndex) => {
-            const userEventMap = eventList["users"][users[rowIndex]]["event_maps"];
-            if (selectedEvent in userEventMap) {
-              return userEventMap[selectedEvent][columnIndex];
-            } else {
-              return false;
-            }
-          }
-        }
+        isColumnChecked={isColumnChecked}
+        isColumnColored={isColumnColored}
         userIndexToKey={(index) => users[index]}
       />
   )
