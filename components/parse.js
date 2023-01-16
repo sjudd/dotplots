@@ -11,6 +11,8 @@ export const EVENT_TIME = "event_time";
 export const STATE_TIME = "state_time";
 export const USER_STATE = "user_state";
 export const ALL_STATES = "all_states";
+export const COUNT = "count";
+export const EVENT_ID = "event_id";
 
 export function parseEventList(list, startDate, endDate) {
   console.log("start " + startDate);
@@ -30,7 +32,7 @@ export function parseEventList(list, startDate, endDate) {
     }
   });
   return {
-    "count": daysBetween(startDate, endDate), 
+    [COUNT]: daysBetween(startDate, endDate), 
     [USERS]: users,
     [ALL_EVENTS]: allEvents,
     [ALL_STATES]: allStates,
@@ -59,7 +61,7 @@ function parseEvent(startDate, endDate, allEvents, users, userId, item) {
   if (eventTime < startDate || eventTime > endDate) {
     return;
   }
-  const eventId = item["event_id"];
+  const eventId = item[EVENT_ID];
   allEvents.add(eventId);
   if (!(eventId in users[userId][EVENT_MAPS])) {
     users[userId][EVENT_MAPS][eventId] = {};

@@ -1,5 +1,5 @@
 import { DATA_LIST } from '../components/fake.js';
-import { parseEventList, ALL_EVENTS, ALL_STATES, STATE_MAPS } from '../components/parse.js';
+import { parseEventList, COUNT, USERS, ALL_EVENTS, ALL_STATES, STATE_MAPS } from '../components/parse.js';
 import UserRows from '../components/UserRows.js';
 import SetDates from '../components/SetDates.js';
 import EventPicker from '../components/EventPicker.js';
@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 
 export default function DotPlot() {
   const router = useRouter();
-  // Query parameters are populated iafter ReactDom.hydrate, so wait
+  // Query parameters are populated after ReactDom.hydrate, so wait
   // for it to be ready before we try to read our params.
   const [ isLoading, setLoading ] = useState(true);
   useEffect(() => setLoading(!router.isReady), [router.isReady]);
@@ -17,7 +17,6 @@ export default function DotPlot() {
     // TODO: Figure out some more reasonable loading UI.
     return;
   }
-
 
   const [selectedEvent, setSelectedEvent] = 
     useQueryParameter(router, 'event');
@@ -28,7 +27,7 @@ export default function DotPlot() {
   const [ endDate, setEndDate ] = 
     useDateQueryParameter(router, 'end', "2022-12-30T00:00:00Z");
 
-  var eventList = parseEventList(DATA_LIST, startDate, endDate);
+  const eventList = parseEventList(DATA_LIST, startDate, endDate);
   console.log(eventList);
 
   return ( 
@@ -90,8 +89,8 @@ function isCheckedInUser(rowIndex, columnIndex, eventList, users, selected, mapK
 
 
 function UserRowsFromEventList({eventList, selectedEvent, selectedState}) {
-  const count = eventList["count"];
-  const users = Object.keys(eventList["users"]);
+  const count = eventList[COUNT];
+  const users = Object.keys(eventList[USERS]);
   const isColumnColored = (rowIndex, columnIndex) => {
     return isCheckedInUser(rowIndex, columnIndex, eventList, users, selectedState, STATE_MAPS);
   };
