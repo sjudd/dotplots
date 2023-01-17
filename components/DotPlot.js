@@ -1,12 +1,14 @@
 import { DATA_LIST } from '../components/fake.js';
-import { parseEventList, COUNT, USERS, ALL_EVENTS, ALL_STATES, STATE_MAPS } from '../components/parse.js';
+import { parseEventList, COUNT, USERS, ALL_EVENTS, ALL_STATES, STATE_MAPS, EARLIEST_DATE, LATEST_DATE } from '../components/parse.js';
 import UserRows from '../components/UserRows.js';
 import SetDates from '../components/SetDates.js';
 import EventPicker from '../components/EventPicker.js';
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from "react";
 import JsonFilePicker from '../components/JsonFilePicker.js';
-//import JSZip from '../dist/jszip.js';
+
+const ZIP_FILENAME = "1";
+const DATA_KEY = "data";
 
 export default function DotPlot() {
   const router = useRouter();
@@ -23,14 +25,14 @@ export default function DotPlot() {
     return;
   }
 
-  if (jsonData == null && router.query['data'] != null) {
+  if (jsonData == null && router.query[DATA_KEY] != null) {
     setLoadingJson(true);
-    const data = atob(router.query['data']);
-    var JSZip = require("jszip");
-    var newZip = new JSZip();
-    newZip.loadAsync(data)
+    const base64Data = router.query[DATA_KEY];
+    const JSZip = require("jszip");
+    const newZip = new JSZip();
+    newZip.loadAsync(base64Data, {base64: true})
       .then((zip) => {
-        zip.file("data.json")
+        zip.file(ZIP_FILENAME)
           .async("string")
           .then((data) => {
             console.log(data);
@@ -46,12 +48,20 @@ export default function DotPlot() {
   const [selectedState, setSelectedState] = 
     useQueryParameter(router, 'state');
   const [ startDate, setStartDate ] = 
-    useDateQueryParameter(router, 'start', "2022-12-01T00:00:00Z");
+    useDateQueryParameter(router, 'start', null);
   const [ endDate, setEndDate ] = 
-    useDateQueryParameter(router, 'end', "2022-12-30T00:00:00Z");
+    useDateQueryParameter(router, 'end', null);
 
   const eventList = parseEventList(jsonData == null ? [] : jsonData["events"], startDate, endDate);
   console.log(eventList);
+  if (!startDate && eventList[EARLIEST_DATE]) {
+    console.log("set start date");
+    setStartDate(new Date(eventList[EARLIEST_DATE]));
+  }
+  if (!endDate && eventList[LATEST_DATE]) {
+    console.log("set end date");
+    setEndDate(new Date((eventList[LATEST_DATE])));
+  }
 
   return ( 
     <div>
@@ -75,12 +85,12 @@ export default function DotPlot() {
 }
 
 function updateJsonDataFromFile(router, jsonData) {
-  var JSZip = require("jszip");
-  var newZip = new JSZip();
-  newZip.file("data.json", jsonData).generateAsync({type: "base64"})
+  const JSZip = require("jszip");
+  const newZip = new JSZip();
+  newZip.file(ZIP_FILENAME, jsonData).generateAsync({type: "base64"})
     .then(function(zipString) {
       router.push(
-        { query: { ...router.query, ["data"]: zipString } },
+        { query: { ...router.query, [DATA_KEY]: zipString } },
         undefined,
         { shallow: true}
       );
