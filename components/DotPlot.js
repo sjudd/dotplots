@@ -5,9 +5,11 @@ import SetDates from '../components/SetDates.js';
 import EventPicker from '../components/EventPicker.js';
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from "react";
+import JsonFilePicker from '../components/JsonFilePicker.js';
 
 export default function DotPlot() {
   const router = useRouter();
+  const [jsonData, setJsonData] = useState(null);
   // Query parameters are populated after ReactDom.hydrate, so wait
   // for it to be ready before we try to read our params.
   const [ isLoading, setLoading ] = useState(true);
@@ -18,6 +20,8 @@ export default function DotPlot() {
     return;
   }
 
+  console.log(jsonData);
+
   const [selectedEvent, setSelectedEvent] = 
     useQueryParameter(router, 'event');
   const [selectedState, setSelectedState] = 
@@ -27,11 +31,12 @@ export default function DotPlot() {
   const [ endDate, setEndDate ] = 
     useDateQueryParameter(router, 'end', "2022-12-30T00:00:00Z");
 
-  const eventList = parseEventList(DATA_LIST, startDate, endDate);
+  const eventList = parseEventList(jsonData == null ? DATA_LIST : jsonData["events"], startDate, endDate);
   console.log(eventList);
 
   return ( 
     <div>
+      <JsonFilePicker setJsonData={setJsonData} />
       <EventPicker 
         eventNames={eventList[ALL_EVENTS]} 
         selectedEvent={selectedEvent}
