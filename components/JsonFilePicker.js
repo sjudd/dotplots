@@ -4,8 +4,7 @@ export default function JsonFilePicker({ setJsonData }) {
       const file = event.target.files[0];
       const reader = new FileReader();
       reader.addEventListener('load', (event) => {
-        console.log(event.target.result);
-        setJsonData(JSON.parse(event.target.result));
+        setJsonData(event.target.result);
       });
       reader.readAsText(file);
     }

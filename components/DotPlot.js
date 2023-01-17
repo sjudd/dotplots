@@ -6,6 +6,7 @@ import EventPicker from '../components/EventPicker.js';
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from "react";
 import JsonFilePicker from '../components/JsonFilePicker.js';
+//import JSZip from '../dist/jszip.js';
 
 export default function DotPlot() {
   const router = useRouter();
@@ -13,14 +14,32 @@ export default function DotPlot() {
   // Query parameters are populated after ReactDom.hydrate, so wait
   // for it to be ready before we try to read our params.
   const [ isLoading, setLoading ] = useState(true);
+  const [ isLoadingJson, setLoadingJson] = useState(false);
+
   useEffect(() => setLoading(!router.isReady), [router.isReady]);
 
-  if (isLoading) {
+  if (isLoading || isLoadingJson) {
     // TODO: Figure out some more reasonable loading UI.
     return;
   }
 
-  console.log(jsonData);
+  if (jsonData == null && router.query['data'] != null) {
+    setLoadingJson(true);
+    const data = atob(router.query['data']);
+    var JSZip = require("jszip");
+    var newZip = new JSZip();
+    newZip.loadAsync(data)
+      .then((zip) => {
+        zip.file("data.json")
+          .async("string")
+          .then((data) => {
+            console.log(data);
+            setLoadingJson(false);
+            setJsonData(JSON.parse(data));
+          });
+      });
+    return;
+  }
 
   const [selectedEvent, setSelectedEvent] = 
     useQueryParameter(router, 'event');
@@ -31,12 +50,12 @@ export default function DotPlot() {
   const [ endDate, setEndDate ] = 
     useDateQueryParameter(router, 'end', "2022-12-30T00:00:00Z");
 
-  const eventList = parseEventList(jsonData == null ? DATA_LIST : jsonData["events"], startDate, endDate);
+  const eventList = parseEventList(jsonData == null ? [] : jsonData["events"], startDate, endDate);
   console.log(eventList);
 
   return ( 
     <div>
-      <JsonFilePicker setJsonData={setJsonData} />
+      <JsonFilePicker setJsonData={(data) => updateJsonDataFromFile(router, data) } />
       <EventPicker 
         eventNames={eventList[ALL_EVENTS]} 
         selectedEvent={selectedEvent}
@@ -53,6 +72,19 @@ export default function DotPlot() {
       <UserRowsFromEventList eventList={eventList} selectedEvent={selectedEvent} selectedState = {selectedState} />
     </div>
   )
+}
+
+function updateJsonDataFromFile(router, jsonData) {
+  var JSZip = require("jszip");
+  var newZip = new JSZip();
+  newZip.file("data.json", jsonData).generateAsync({type: "base64"})
+    .then(function(zipString) {
+      router.push(
+        { query: { ...router.query, ["data"]: zipString } },
+        undefined,
+        { shallow: true}
+      );
+    });
 }
 
 function useDateQueryParameter(router, key, defaultInitialValue) {
