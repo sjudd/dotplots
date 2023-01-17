@@ -15,9 +15,7 @@ export const EARLIEST_DATE = "earliest_date";
 export const LATEST_DATE = "latest_date";
 export const TIME = "time";
 
-export function parseEventList(list, startDate, endDate) {
-  console.log("start " + startDate);
-  console.log("end " + endDate);
+export function parseJsonData(list, startDate, endDate) {
   const allEvents = new Set();
   const allStates = new Set();
   const users = {};

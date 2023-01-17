@@ -17,5 +17,7 @@
 }
 
 .allrows {
+  width: 80vw;
+  padding-right: 2px;
   border-bottom: 2px solid black;
 }

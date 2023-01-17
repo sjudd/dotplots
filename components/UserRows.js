@@ -11,7 +11,7 @@ function UserRow({ columnCount, isColumnChecked, isColumnColored }) {
   return <div className={styles.row}>{columns}</div>
 }
 
-export default function UserRows({ totalRows, totalColumns, isColumnChecked, isColumnColored, userIndexToKey}) {
+export default function UserRows({ totalRows, totalColumns, isColumnChecked, isColumnColored, userIndexToKey }) {
   const rows = []
   for (let i = 0; i < totalRows; i++) {
     rows.push(
