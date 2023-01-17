@@ -6,6 +6,7 @@ import EventPicker from '../components/EventPicker.js';
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from "react";
 import JsonFilePicker from '../components/JsonFilePicker.js';
+import styles from '../styles/DotPlot.module.css';
 
 const ZIP_FILENAME = "1";
 const DATA_KEY = "data";
@@ -48,21 +49,33 @@ export default function DotPlot() {
   }
 
   return ( 
-    <div>
+    <div className={styles.parent}>
       <JsonFilePicker setJsonData={(data) => updateJsonDataFromFile(router, data) } />
-      <EventPicker 
-        eventNames={parsedData[ALL_EVENTS]} 
-        selectedEvent={selectedEvent}
-        setSelectedEvent={setSelectedEvent} />
-      <EventPicker 
-        eventNames={parsedData[ALL_STATES]} 
-        selectedEvent={selectedState}
-        setSelectedEvent={setSelectedState} />
-      <SetDates 
-        startDate={startDate} 
-        setStartDate={setStartDate} 
-        endDate={endDate}
-        setEndDate={setEndDate} />
+      <div className={styles.pickers}>
+        <div>
+          <b>User Events:</b>
+          <EventPicker 
+            className={styles.pickersitem}
+            eventNames={parsedData[ALL_EVENTS]} 
+            selectedEvent={selectedEvent}
+            setSelectedEvent={setSelectedEvent} />
+        </div>
+        <div>
+          <b>User States:</b>
+          <EventPicker 
+            className={styles.pickersitem}
+            eventNames={parsedData[ALL_STATES]} 
+            selectedEvent={selectedState}
+            setSelectedEvent={setSelectedState} />
+        </div>
+      </div>
+      <div className={styles.dates}>
+        <SetDates 
+          startDate={startDate} 
+          setStartDate={setStartDate} 
+          endDate={endDate}
+          setEndDate={setEndDate} />
+      </div>
       {
         parsedData[COUNT] > 0 
           ? <UserRowsFromEventList parsedData={parsedData} selectedEvent={selectedEvent} selectedState = {selectedState} />

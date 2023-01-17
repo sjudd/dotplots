@@ -1,5 +1,6 @@
 .set_dates {
   display: flex;
+  justify-content: space-evenly;
 }
 
 .set_dates > * {
