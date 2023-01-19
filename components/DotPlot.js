@@ -1,4 +1,3 @@
-import { DATA_LIST } from '../components/fake.js';
 import { parseJsonData, COUNT, USERS, ALL_EVENTS, ALL_STATES, STATE_MAPS, EARLIEST_DATE, LATEST_DATE } from '../components/parse.js';
 import UserRows from '../components/UserRows.js';
 import SetDates from '../components/SetDates.js';
