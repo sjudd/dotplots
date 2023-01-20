@@ -21,3 +21,7 @@
   flex-direction: column;
   justify-content: center;
 }
+
+.readme {
+  margin: 1em;
+}

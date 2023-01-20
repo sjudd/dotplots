@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from "react";
 import JsonFilePicker from '../components/JsonFilePicker.js';
 import styles from '../styles/DotPlot.module.css';
+import Link from 'next/link';
 
 const ZIP_FILENAME = "1";
 const DATA_KEY = "data";
@@ -127,6 +128,16 @@ export default function DotPlot() {
   if (isLoading || isLoadingJson) {
     // TODO: Figure out some more reasonable loading UI.
     return;
+  }
+
+  if (jsonData == null) {
+    return (
+      <div className={styles.parent}>
+        <div className={styles.readme}>See <Link href={"https://github.com/sjudd/dotplots#readme"}>the README</Link> for the expected file format.
+        </div>
+        <JsonFilePicker setJsonData={setJsonData} />
+      </div>
+    );
   }
 
   return ( 
