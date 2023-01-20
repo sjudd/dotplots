@@ -28,6 +28,7 @@ However sufficiently large numbers of events or states may exceed maximum url
 sizes. This is one (of a great many) areas for improvement.
 
 Things to fix:
+  *  Make the UI work even a little bit on mobile
   *  Customize how states and/or events are displayed
   *  Allow picking time periods other than one day
   *  Allow selecting multiple events or states
