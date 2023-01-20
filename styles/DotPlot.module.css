@@ -7,13 +7,12 @@
   width: 100%;
   display: flex;
   justify-content: space-evenly;
-  margin: 0.5em 1em;
+  margin-top: 1em;
 }
 
 .dates {
   width: 100%;
-  margin: 0.5em 1em 1em;
-
+  margin-bottom: 0.5em;
 }
 
 .parent {

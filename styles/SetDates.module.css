@@ -1,6 +1,8 @@
 .set_dates {
   display: flex;
-  justify-content: space-evenly;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 
 .set_dates > * {
@@ -9,6 +11,7 @@
 
 .picker_and_label {
   display: flex;
+  margin-top: 0.5em;
 }
 
 .label {
